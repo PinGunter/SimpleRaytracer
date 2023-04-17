@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(raytracer)
+set(CMAKE_CXX_STANDARD 17)
+include_directories(include)
+add_executable(raytracer src/main.cpp include/vec3.h include/color.h include/ray.h)
+add_custom_target(WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} COMMAND "gnome-photos output/image.ppm")
