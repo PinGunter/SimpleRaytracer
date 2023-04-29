@@ -17,7 +17,7 @@ public:
 
     sphere(point3 c, double r) : center(c), radius(r) {};
 
-    virtual bool hit(
+    bool hit(
             const ray &r, double t_min, double t_max, hit_record &rec) const override;
 
 };
