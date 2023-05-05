@@ -6,7 +6,10 @@
 #include <material.h>
 #include <fstream>
 #include <iostream>
+#include <chrono>
 
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
 
 color ray_color(const ray &r, const hittable &world, int depth) {
     if (depth <= 0) return color(0, 0, 0);
@@ -27,8 +30,10 @@ int main() {
 
     // Image
     const double aspect_ratio = 16.0 / 9.0;
-    const int image_width = 300;
+    const int image_width = 1200;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
+    std::vector<color> image(image_width * image_height);
+    int image_index = 0;
     const int samples_per_pixel = 100;
     const int max_depth = 40;
     // Camera
@@ -49,11 +54,11 @@ int main() {
     world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
 
     // Render
+    auto start = high_resolution_clock::now();
     std::ofstream output_file("output/image.ppm");
     if (output_file.good()) {
         output_file << "P3\n"
                     << image_width << ' ' << image_height << "\n255\n";
-
         for (int j = image_height - 1; j >= 0; --j) {
             std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
             for (int i = 0; i < image_width; ++i) {
@@ -64,13 +69,14 @@ int main() {
                     ray r = cam.get_ray(u, v);
                     pixel_color += ray_color(r, world, max_depth);
                 }
-                write_color(output_file, pixel_color, samples_per_pixel);
+                image[image_index++] = pixel_color;
             }
         }
-
+        write_color(output_file, image, samples_per_pixel);
         output_file.close();
-
-        std::cerr << "\nDone.\n";
+        auto end = high_resolution_clock::now();
+        auto time = duration_cast<std::chrono::milliseconds>(end - start);
+        std::cerr << "\nDone.\nTook " << time.count() / 1000.0 << " seconds\n";
     } else {
         std::cerr << "Error opening file\n";
     }
