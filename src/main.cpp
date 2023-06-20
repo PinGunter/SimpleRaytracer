@@ -30,7 +30,7 @@ int main() {
 
     // Image
     const double aspect_ratio = 16.0 / 9.0;
-    const int image_width = 300;
+    const int image_width = 1200;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     std::vector<color> image(image_width * image_height);
     const int samples_per_pixel = 200;
@@ -43,12 +43,12 @@ int main() {
     hittable_list world;
 
     auto material_ground = make_shared<lambertian>(color(0.1, 0.1, 0.1));
-    auto material_left = make_shared<lambertian>(color(120.0 / 255.0, 254.0 / 255.0, 207.0 / 255.0));
+    auto material_left = make_shared<dielectric>(1.5);
     auto material_right = make_shared<lambertian>(color(191.0 / 255.0, 78.0 / 255.0, 48 / 255.0));
     auto material_center = make_shared<metal>(color(198.0 / 255.0, 204.0 / 255.0, 178.0 / 255.0), 0.2);
 
     world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
-    world.add(make_shared<sphere>(point3(0.0, 1.5, -3.0), 2, material_center));
+//    world.add(make_shared<sphere>(point3(0.0, 1.5, -3.0), 2, material_center));
     world.add(make_shared<sphere>(point3(-0.5, 0.0, -1.0), 0.5, material_left));
     world.add(make_shared<sphere>(point3(0.5, 0.0, -1.0), 0.5, material_right));
 
